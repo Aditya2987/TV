@@ -272,9 +272,13 @@ function playChannelFullscreen(channel) {
                         break;
                     default:
                         hls.destroy();
-                        alert('Cannot play this channel. Please try another one.'
-    }
-}
+                        alert('Cannot play this channel. Please try another one.');
+                        closePlayer();
+                        break;
+                }
+            }
+        });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 
 // Escape HTML to prevent XSS
 function escapeHtml(text) {

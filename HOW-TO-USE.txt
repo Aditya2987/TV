@@ -1,0 +1,37 @@
+📺 TV CHANNELS - HOW TO USE
+=======================================
+
+SUPER SIMPLE - JUST 2 STEPS:
+-----------------------------
+
+STEP 1: Select Channels on PC
+   1. Double-click: start-server.bat (keep it running)
+   2. Open: index.html in browser
+   3. Select your favorite channels
+   
+STEP 2: Watch on TV
+   1. Double-click: start-tv-server.bat (keep it running)
+   2. It will show: "On your TV browser, open: http://192.168.x.x:3001"
+   3. Open that URL in your TV browser
+   4. Done! All channels work! 🎉
+
+
+IMPORTANT NOTES:
+----------------
+✅ All channels (HTTP & HTTPS) work via HTTP server
+✅ PC and TV must be on same WiFi
+✅ Keep both server windows open while watching
+✅ Works on any device browser (TV, phone, tablet)
+
+
+TO ADD MORE CHANNELS:
+---------------------
+Just go back to Step 1, select more, then reload TV browser
+
+
+FIREBASE HOSTING:
+-----------------
+If you want to deploy to Firebase (https://tv-channels-f64ae.web.app):
+- Only HTTPS channels will work there
+- HTTP channels only work via local server (start-tv-server.bat)
+- Use: firebase deploy --only hosting

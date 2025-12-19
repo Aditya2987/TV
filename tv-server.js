@@ -19,15 +19,17 @@ function getLocalIP() {
 }
 
 const mimeTypes = {
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.css': 'text/css',
-    '.json': 'application/json',
+    '.html': 'text/html; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpg',
     '.gif': 'image/gif',
     '.svg': 'image/svg+xml',
-    '.ico': 'image/x-icon'
+    '.ico': 'image/x-icon',
+    '.m3u8': 'application/vnd.apple.mpegurl',
+    '.ts': 'video/mp2t'
 };
 
 const server = http.createServer((req, res) => {
@@ -42,14 +44,17 @@ const server = http.createServer((req, res) => {
     fs.readFile(filePath, (error, content) => {
         if (error) {
             if (error.code == 'ENOENT') {
-                res.writeHead(404);
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
                 res.end('404 Not Found');
             } else {
-                res.writeHead(500);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
                 res.end('500 Internal Server Error: ' + error.code);
             }
         } else {
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, { 
+                'Content-Type': contentType,
+                'Cache-Control': 'no-cache'
+            });
             res.end(content, 'utf-8');
         }
     });

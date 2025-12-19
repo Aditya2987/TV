@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Web Player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📺 IPTV Web Player</h1>
+            <p>Watch TV channels from around the world</p>
+            <div class="header-buttons">
+                <a href="favorites.html" class="nav-btn">⭐ My Selected Channels</a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar with channel list -->
+            <aside class="sidebar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search channels..." />
+                </div>
+                
+                <div class="playlist-selector">
+                    <label for="countrySelect">Select Country:</label>
+                    <select id="countrySelect">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+
+                <div class="filter-options">
+                    <label for="categoryFilter">Category:</label>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+
+                <div id="channelList" class="channel-list">
+                    <div class="loading">Loading channels...</div>
+                </div>
+            </aside>
+
+            <!-- Video player section -->
+            <main class="player-section">
+                <div class="video-container">
+                    <video id="videoPlayer" controls crossorigin="anonymous">
+                        <source id="videoSource" type="application/x-mpegURL">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div id="welcomeScreen" class="welcome-screen">
+                        <h2>Welcome to IPTV Web Player</h2>
+                        <p>Select a channel from the left to start watching</p>
+                    </div>
+                </div>
+
+                <div class="player-info">
+                    <h2 id="currentChannelName">No channel selected</h2>
+                    <p id="currentChannelInfo"></p>
+                </div>
+
+                <div class="player-controls">
+                    <button id="reloadBtn" class="control-btn">🔄 Reload Stream</button>
+                    <button id="fullscreenBtn" class="control-btn">⛶ Fullscreen</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Include HLS.js for playing m3u8 streams -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>
