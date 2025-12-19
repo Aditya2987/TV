@@ -202,15 +202,32 @@ function playChannelFullscreen(channel) {
     };
     document.addEventListener('keydown', escHandler);
     
+    // Check if we should use proxy
+    const shouldUseProxy = window.location.protocol === 'http:' && 
+                          (window.location.hostname.includes('192.168') || 
+                           window.location.hostname.includes('10.') ||
+                           window.location.hostname.includes('onrender.com'));
+    
+    console.log('Should use proxy:', shouldUseProxy);
+    
     // Start playing
     if (Hls.isSupported()) {
+        // Custom loader to proxy all requests
+        class ProxyLoader extends Hls.DefaultConfig.loader {
+            load(context, config, callbacks) {
+                if (shouldUseProxy && !context.url.startsWith('/proxy') && !context.url.startsWith('blob:')) {
+                    console.log('Proxying:', context.url);
+                    context.url = `/proxy?url=${encodeURIComponent(context.url)}`;
+                }
+                super.load(context, config, callbacks);
+            }
+        }
+        
         const hls = new Hls({
             enableWorker: true,
             lowLatencyMode: true,
             backBufferLength: 90,
-            xhrSetup: function(xhr, url) {
-                xhr.withCredentials = false;
-            }
+            loader: ProxyLoader
         });
         
         window.currentHls = hls;
@@ -236,27 +253,6 @@ function playChannelFullscreen(channel) {
         hls.on(Hls.Events.ERROR, (event, data) => {
             console.error('HLS Error:', data);
             if (data.fatal) {
-                let errorMsg = 'Cannot play this channel.';
-                
-                // Check if it's HTTP on HTTPS issue
-                if (window.location.protocol === 'https:' && channel.url.startsWith('http://')) {
-                    errorMsg = '❌ HTTP channels cannot play on HTTPS site.\n\n' +
-                              '✅ SOLUTION:\n' +
-                              '1. Run: start-tv-server.bat on your PC\n' +
-                              '2. Open: http://192.168.1.5:3001 on TV\n' +
-                              '3. All channels will work!\n\n' +
-                              'Or select only HTTPS channels.';
-                }
-                
-                switch (data.type) {
-                    case Hls.ErrorTypes.NETWORK_ERROR:
-                        console.log('Network error, attempting retry...');
-                        hls.startLoad();
-                        setTimeout(() => {
-                            if (!video.paused) return;
-                            alert(errorMsg);
-                            closePlayer();
-                        }, 3000);
                 switch (data.type) {
                     case Hls.ErrorTypes.NETWORK_ERROR:
                         console.log('Network error, attempting retry...');
@@ -279,6 +275,23 @@ function playChannelFullscreen(channel) {
             }
         });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari)
+        video.src = channel.url;
+        video.play().catch(e => {
+            console.error('Playback error:', e);
+            alert('Failed to play channel. Please try another channel.');
+            closePlayer();
+        });
+        
+        // Request fullscreen
+        if (playerDiv.requestFullscreen) {
+            playerDiv.requestFullscreen().catch(err => console.log('Fullscreen request failed:', err));
+        }
+    } else {
+        alert('Your browser does not support HLS playback');
+        closePlayer();
+    }
+}
 
 // Escape HTML to prevent XSS
 function escapeHtml(text) {
